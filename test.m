@@ -1,0 +1,37 @@
+
+  
+% ??????? 30*(64*64)??????????????  
+for i=1:30  
+    Image=rand(128,128);
+    Image=imresize(Image,[64,64]);  
+    phi(i,:)=double(reshape(Image,1,[]));  
+end
+  
+% ?????????????  
+mean_phi=mean(phi,1);  
+mean_face=reshape(mean_phi,64,64);  
+Image_mean=mat2gray(mean_face);  
+imwrite(Image_mean,'meanface2.bmp','bmp');  
+  
+% ??matlab???pca????  
+[coeff, score, latent, TSQUARED] = pca(phi,'Economy',true);
+  
+%display Eigenface  
+for i=1:29  
+    Eigenface=reshape(coeff(:,i),[64,64]);  
+    figure(i);  
+    imshow(mat2gray(Eigenface));  
+end  
+  
+% ????  
+%??????????  
+clc;  
+ 
+error=zeros([1,4]);  
+  
+Image=rand(128,128);
+Image=double(imresize(Image,[64,64]));  
+phi_test=zeros(1,64*64);  
+phi_test(1,:)=double(reshape(Image,1,[])); % ????????????????  
+X_test=phi_test-mean_phi; % ??????????  
+Y_test=X_test*coeff;
